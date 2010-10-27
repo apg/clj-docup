@@ -1,0 +1,24 @@
+# docup
+
+docup is a very simple markup language that attempts to get rid of all the gobbledegock associated with something like Markdown. As a result there are very few operators, and nesting is not permitted within simple elements.
+
+   `(some code)` => [:code "(some code)"]
+   *some bold text* => [:b "some bold text"]
+   /some italic text/ => [:i "some italic text"]
+   _some underlined text_ => [:u "some underlined text"]
+
+   `(some code _hello_)` => [:code "(some code _hello_)"]
+
+## Usage
+
+FIXME: write
+
+## Installation
+
+FIXME: write
+
+## License
+
+Copyright (C) 2010 FIXME
+
+Distributed under the Eclipse Public License, the same as Clojure.
