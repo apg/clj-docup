@@ -42,36 +42,31 @@
     (let [c (read-char)]
       (condp = c
         til (join buff)
-        \\ (if (= (peek-char) til)
-             (recur (conj buff til))
-             (recur (conj buff c)))
+        \\ (recur (conj buff 
+                        (if (= (peek-char) til)
+                          til
+                          c)))
         :eof (join buff)
         (recur (conj buff c))))))
+
+(def ^{:private true} char-tags {\* :b \` :code \/ :i \_ :u})
 
 (defn read-paragraph []
   (loop [buff []
          accum [:p]]
-    (let [c (read-char)]
-      (case c
-        \* (recur [] (continue-reading buff accum 
-                                       #(vector :b (read-matching c))))
-        \` (recur [] (continue-reading buff accum
-                                       #(vector :code (read-matching c))))
-        \/ (recur [] (continue-reading buff accum
-                                       #(vector :i (read-matching c))))
-        \_ (recur [] (continue-reading buff accum
-                                       #(vector :u (read-matching c))))
-        :eof (if (> (count buff) 0)
-               (conj accum (join buff))
-               accum)
-        (recur (conj buff c) accum)))))
+    (let [c (read-char)
+          tag (char-tags c)]
+      (cond
+       (not (nil? tag)) (continue-reading buff accum
+                                          #(vector tag (read-matching c)))
+       :eof (if (> (count buff) 0)
+              (conj accum (join buff))
+              accum)
+       :else (recur (conj buff c) accum)))))
 
-(defn docup []
+(defn docup
   "Returns a tree of the represented document"
-  (read-paragraph))
-
-(defn docup-str
-  "Returns a tree of the represented document"
-  [s]
-  (binding [*in* (StringReader. s)]
-    (docup)))
+  ([] (read-paragraph))
+  ([s]
+     (binding [*in* (StringReader. s)]
+       (docup))))
