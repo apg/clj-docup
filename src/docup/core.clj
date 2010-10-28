@@ -1,8 +1,10 @@
-(ns docup.core
+(ns ^{:doc "A simple, non-cluttered markup language"
+      :author "Andrew Gwozdziewycz"}
+  docup.core
   (:use [clojure.string :only (join triml)])
   (:import [java.io StringReader]))
 
-(def #^{:private true} exploring-count 1000)
+(def ^{:private true} exploring-count 1000)
 
 (defn- char* [c]
   (if (== c -1) :eof (char c))) 
@@ -67,11 +69,13 @@
         (recur (conj buff c))))))
 
 (defn maybe-read-image
-  "Maybe reads an image, given starting char, otherwise whatever is read is returned as buffer"
+  "Maybe reads an image, given starting char, otherwise whatever is read
+ is returned as buffer"
   []
   (let [label? (peek-until \:)
         desc? (peek-until \])]
-    (if (< (count label?) (count desc?))
+    (if (and (< (count label?) (count desc?))
+             (> (count label?) 0))
       (let [label (read-until \:)
             desc (let [_ (read-char)
                        t (triml (read-until \]))
@@ -80,8 +84,8 @@
         [:img label desc])
       nil)))
 
-(def #^{:private true} char-tags {\* :b \` :code \/ :i \_ :u})
-(def #^{:private true} reserved-char #{\* \` \/ \_})
+(def ^{:private true} char-tags {\* :b \` :code \/ :i \_ :u})
+(def ^{:private true} reserved-char (apply hash-set (keys char-tags)))
 
 (defn read-paragraph []
   (loop [buff []
