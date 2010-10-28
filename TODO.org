@@ -1,0 +1,12 @@
+* overall
+** need to define document context
+*** needed for indent, etc...
+
+* images
+** allow for quoted :
+*** do not allow for [] within, since that'd be confusing.
+** ensure label at least 1 character
+** parse references
+*** this of course means we need to remove ourselves from paragraph mode and into something more sustainable
+* URLs
+** these probably don't have semantic meaning in docup, but do elsewhere for sure
